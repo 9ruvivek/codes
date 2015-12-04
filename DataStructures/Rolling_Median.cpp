@@ -15,7 +15,7 @@ typedef long double LD;
       
       Question: Find Median of the data at every step
 
-      Complexity: Can be Considered to be atmost O(sqrt(N)) + Time to precompute phisum till a fixed limit(using normal way)
+      Complexity: Can be Considered to be O(Nlog(N))
 
 ******************************************************************************************************************************************/
 
