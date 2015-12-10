@@ -12,7 +12,8 @@ typedef long long int ll;
 
 /******************************************************************************************************************************************
       
-      Question: Range Update and query
+      Question: Increasing Range Update and query
+      updates range with values a val,2*val,3*val,.......
 
 ******************************************************************************************************************************************/
 #define N 1000001
@@ -23,7 +24,8 @@ class segtree
 		ll n;
 		ll arr[N];
 		ll st[NLOGN];
-		ll lazy[NLOGN];
+		ll lazya[NLOGN];
+		ll lazyd[NLOGN];
 		void initialize();
 		void construct(ll parent,ll left,ll right);
 		void rangeadd(ll parent,ll start,ll end,ll left,ll right,ll value);
@@ -35,7 +37,7 @@ void segtree::initialize()
 	for(int i=0;i<N;i++)
 		arr[i]=0ll;
 	for(int i=0;i<NLOGN;i++)
-		st[i]=lazy[i]=0ll;
+		st[i]=lazya[i]=lazyd[i]=0ll;
 }
 void segtree::rangeadd(ll parent,ll start,ll end,ll left,ll right,ll value)
 {
@@ -43,25 +45,32 @@ void segtree::rangeadd(ll parent,ll start,ll end,ll left,ll right,ll value)
 	ll rchild=lchild+1;
 	ll mid=(start+end)>>1;
 	ll len=end-start+1;
-	if(lazy[parent])
+	if(lazyd[parent])
 	{
-		st[parent]+=len*lazy[parent];
+		st[parent]+=len*lazya[parent]+((len*(len-1))/2)*lazyd[parent];
 		if(len>1)
 		{
-			lazy[lchild]+=lazy[parent];
-			lazy[rchild]+=lazy[parent];
+			lazya[lchild]+=lazya[parent];
+			lazyd[lchild]+=lazyd[parent];
+			lazya[rchild]+=lazya[parent]+(mid+1-start)*lazyd[parent];
+			lazyd[rchild]+=lazyd[parent];
 		}
-		lazy[parent]=0ll;
+		lazya[parent]=0ll;
+		lazyd[parent]=0ll;
 	}
 	if(start>end || start>right || end<left)
 		return;
 	if(start>=left && end<=right)
 	{
-		st[parent]+=len*value;
+		ll l1=end-left+1;
+		ll l2=start-left;
+		st[parent]+=(((l1*(l1+1))/2)-((l2*(l2+1))/2))*value;
 		if(len>1)
 		{
-			lazy[lchild]+=value;
-			lazy[rchild]+=value;
+			lazya[lchild]+=(start-left+1)*value;
+			lazyd[lchild]+=value;
+			lazya[rchild]+=(mid-left+2)*value;
+			lazyd[rchild]+=value;
 		}
 		return;
 	}
@@ -76,15 +85,18 @@ ll segtree::rangesum(ll parent,ll start,ll end,ll left,ll right)
 	ll rchild=lchild+1;
 	ll mid=(start+end)>>1;
 	ll len=end-start+1;
-	if(lazy[parent])
+	if(lazyd[parent])
 	{
-		st[parent]+=len*lazy[parent];
+		st[parent]+=len*lazya[parent]+((len*(len-1))/2)*lazyd[parent];
 		if(len>1)
 		{
-			lazy[lchild]+=lazy[parent];
-			lazy[rchild]+=lazy[parent];
+			lazya[lchild]+=lazya[parent];
+			lazyd[lchild]+=lazyd[parent];
+			lazya[rchild]+=lazya[parent]+(mid+1-start)*lazyd[parent];
+			lazyd[rchild]+=lazyd[parent];
 		}
-		lazy[parent]=0ll;
+		lazya[parent]=0ll;
+		lazyd[parent]=0ll;
 	}
 	if(start>end || start>right || end<left)
 		return 0ll;
