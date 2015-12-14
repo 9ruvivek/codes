@@ -151,7 +151,7 @@ int query_up(int u,int v)
 		u=ancestor[head][0];
 		uchain=chainidx[u];
 	}
-	res=max(res,query(1,1,n,arridx[v],arridx[u]));
+	res=max(res,query(1,1,n,arridx[v]+1,arridx[u]));
 	return res;
 }
 int change(int idx,int w)
@@ -167,6 +167,7 @@ int query_max(int u,int v)
 }
 int main()
 {
+	std::ios::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
 	cin >> tc;
 	while(tc--)
 	{
